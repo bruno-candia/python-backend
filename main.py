@@ -1,35 +1,12 @@
-from typing import Optional
 from fastapi import FastAPI
-from pydantic import BaseModel
-
-
-class Usuario(BaseModel):
-    nome: str
-    username: Optional[str] = None
-    senha: str
+from routes.UserRoute import router as UserRouter
 
 app = FastAPI()
 
-@app.get("/")
-def read_root():
+app.include_router(UserRouter, tags=["User"], prefix="/api/user")
+
+@app.get("/api/health", tags=["Health"])
+async def health():
     return {
-        "mensagem": "Ola mundo, esta e minha primeira API"
+        "status": "OK"
     }
-@app.get("/api/soma")
-def soma():
-    return{
-        "resultado": 2 + 3
-    }
-
-@app.post("/api/login")
-def login(usuario: Usuario):
-    if usuario.nome == 'bruno123' and usuario.senha == 'senha123':    
-        reposta = {
-            "mensagem": "Login realizado com sucesso"
-        }
-    else:
-        reposta = {
-            "mensagem": "senha ou usuario incorreto"
-        }
-
-    return reposta
